@@ -60,10 +60,17 @@ Es = input('Enter exposure time (us): ')
 
 # Sampling time based on streak time across 3 pixels
 tsample = (pix + ((1/3.)*Is))/Ui
+fps = (1/tsample)*10**6
 print ('Recommended sampling time (us): '),tsample
-print ('Recommended sampling frequency (fps): '),(1/tsample)*10**6
+print ('Recommended sampling frequency (fps): '),fps
 
-# Assuming the leading edge of a particle is aligned with the trailing
+N = 100                                  #Number of frames to expose
+rp = 0.5*Is
+t = np.linspace(0,N,N+1)                 #Time step for each frame
+for i in range(N):
+    x = 
+
+'''# Assuming the leading edge of a particle is aligned with the trailing
 # edge of the pixel, the pixel exposure will be:
 
 def Intensity(x):
@@ -104,5 +111,5 @@ plt.title('Exposure Distribution of Sequentially Fired Pixels')
 plt.ylabel('Exposure Based on Normalized Intensity Profile')
 cell = np.linspace(1,3,3)
 Ep = [Ep1,Ep2,Ep3]
-plt.bar(-cell,Ep)
+plt.bar(-cell,Ep)'''
 plt.show()
