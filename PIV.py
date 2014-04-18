@@ -79,17 +79,21 @@ plt.scatter(xp,yp)
 N = 100                                  #Number of frames to expose
 rp = 0.5*Is
 t = np.linspace(0,N,N+1)                 #Time step for each frame
-E = np.empty_like(t)                     #Empty exposure array
+E = [np.empty_like(xp),np.empty_like(t)] #Empty exposure array for each particle
 
 for i in range(5):
     for j in range(N):
         x = xp[i]+cos(alpha)*Ui*t[j]
         if (x+rp <0) or (x-rp >0):
-            E[j]=0
-        else: E[j]=I(x,beta,ds,x,x+Ui*Es)
+            E[i,j]=0
+        else: E[i,j]=I(x,beta,ds,x,x+Ui*Es)
 
 plt.figure(2)
-plt.bar(t,E)
+plt.bar(t,E[1])
+plt.bar(t,E[2])
+plt.bar(t,E[3])
+plt.bar(t,E[4])
+plt.bar(t,E[5])
 plt.xlabel('Time Steps')
 plt.ylabel('Exposure')
 plt.xlim(min(t),max(t))
