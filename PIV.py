@@ -71,28 +71,34 @@ def I(x,beta,ds,a,b):
         return np.exp(-4*beta**2*x**2/ds**2)
     return integrate.quad(lambda s:func(s),a,b)[0]
 
-xp = -50*np.random.random(5)
-yp = -5*np.random.random(5)
+xp = np.linspace(-50,-10,5)
+yp = 5*np.random.random(5)
 plt.figure(1)
 plt.scatter(xp,yp)
+print ('xp'),xp
 
-N = 100                                  #Number of frames to expose
+N = 200                                #Number of frames to expose
 rp = 0.5*Is
+print ('rp'),rp
 t = np.linspace(0,N,N+1)                 #Time step for each frame
 E = np.empty_like(t)                     #Empty exposure array
 
 for i in range(5):
     for j in range(N):
         x = xp[i]+cos(alpha)*Ui*t[j]
-        if (x+rp <0) or (x-rp >0):
-            E[j]=0
-        else: E[j]=I(x,beta,ds,x,x+Ui*Es)
-
-plt.figure(2)
-plt.bar(t,E)
-plt.xlabel('Time Steps')
-plt.ylabel('Exposure')
-plt.xlim(min(t),max(t))
+        print ('x'),x
+        if (x+rp <0.) or (x-rp >pix):
+            E[j]=0.
+        else: E[j]=I(x,beta,ds,x,x+(Ui*Es))
+    print ('xp'),xp
+    print ('Exposure[j]'),E
+        
+    plt.figure(2)
+    plt.bar(t,E)
+    plt.xlabel('Time Steps')
+    plt.ylabel('Exposure')
+    plt.xlim(min(t),max(t))
+    plt.ylim(0,5)
 
 """# Assuming the leading edge of a particle is aligned with the trailing
 # edge of the pixel, the pixel exposure will be:
