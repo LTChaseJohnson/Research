@@ -61,7 +61,7 @@ print ('Recommended exposure time (us): '),dte
 Es = input('Enter exposure time (us): ')
  
 # Sampling time based on streak time across 3 pixels
-tsample = (pix + ((1/3.)*Is))/Ui
+tsample = ((1/3.)*Is)/Ui
 fps = (1/tsample)*10**6
 print ('Recommended sampling time (us): '),tsample
 print ('Recommended sampling frequency (fps): '),fps
@@ -71,32 +71,57 @@ def I(x,beta,ds,a,b):
         return np.exp(-4*beta**2*x**2/ds**2)
     return integrate.quad(lambda s:func(s),a,b)[0]
 
-xp = -50*np.random.random(5)
-yp = -5*np.random.random(5)
+xp = np.linspace(-500,-10,5)
+yp = 5*np.random.random(5)
 plt.figure(1)
 plt.scatter(xp,yp)
+print ('xp'),xp
 
-N = 100                                  #Number of frames to expose
+N = 50                                #Number of frames to expose
 rp = 0.5*Is
+print ('rp'),rp
 t = np.linspace(0,N,N+1)                 #Time step for each frame
-E = [np.empty_like(xp),np.empty_like(t)] #Empty exposure array for each particle
+E = np.empty_like(t)                #Empty exposure array for each particle
 
 for i in range(5):
     for j in range(N):
-        x = xp[i]+cos(alpha)*Ui*t[j]
+        x = xp[i]+cos(alpha)*Ui*t[j]*tsample
         if (x+rp <0) or (x-rp >0):
-            E[i,j]=0
-        else: E[i,j]=I(x,beta,ds,x,x+Ui*Es)
+            E[j]=0
+        else: E[j]=I(x,beta,ds,x,x+Ui*Es)
+        print ('x'),x
+        if (x+rp <0.) or (x-rp >pix):
+            E[j]=0.
+        else: E[j]=I(x,beta,ds,x,x+(Ui*Es))
+    print ('xp'),xp
+    print ('Exposure[j]'),E
+        
+    plt.figure(2)
+    plt.bar(t,E,color='b')
+    plt.xlabel('Time Steps')
+    plt.ylabel('Exposure')
+    plt.xlim(min(t),max(t))
+    plt.ylim(0,8)
 
-plt.figure(2)
-plt.bar(t,E[1])
-plt.bar(t,E[2])
-plt.bar(t,E[3])
-plt.bar(t,E[4])
-plt.bar(t,E[5])
-plt.xlabel('Time Steps')
-plt.ylabel('Exposure')
-plt.xlim(min(t),max(t))
+for i in range(5):
+    for j in range(N):
+        x = xp[i]+cos(alpha)*Ui*t[j]*tsample
+        if (x+rp <10) or (x-rp >10):
+            E[j]=0
+        else: E[j]=I(x,beta,ds,x,x+Ui*Es)
+        print ('x'),x
+        if (x+rp <10.) or (x-rp >pix+10):
+            E[j]=0.
+        else: E[j]=I(x-10,beta,ds,x,x+(Ui*Es))
+    print ('xp'),xp
+    print ('Exposure[j]'),E
+        
+    plt.figure(2)
+    plt.bar(t,E,color='g')
+    plt.xlabel('Time Steps')
+    plt.ylabel('Exposure')
+    plt.xlim(min(t),max(t))
+    plt.ylim(0,8)
 
 """# Assuming the leading edge of a particle is aligned with the trailing
 # edge of the pixel, the pixel exposure will be:
