@@ -13,7 +13,7 @@ from scipy import integrate
 import scipy.special as sp
 
 #Os = input('Enter particle size (microns): ')
-Os = 40.
+Os = 20.
 #pix = input('Enter pixel size (microns): ')
 pix = 7.
 #Widthpix,Heightpix = input('Enter # pixels width,height: ')
@@ -71,13 +71,13 @@ def I(x,beta,ds,a,b):
         return np.exp(-4*beta**2*x**2/ds**2)
     return integrate.quad(lambda s:func(s),a,b)[0]
 
-xp = np.linspace(-500,-10,5)
-yp = 5*np.random.random(5)
+xp = -50*np.linspace(1,5,5)
+yp = 5*np.linspace(1,5,5)
 plt.figure(1)
 plt.scatter(xp,yp)
 print ('xp'),xp
 
-N = 50                                #Number of frames to expose
+N = 100                                #Number of frames to expose
 rp = 0.5*Is
 print ('rp'),rp
 t = np.linspace(0,N,N+1)                 #Time step for each frame
@@ -85,19 +85,22 @@ E = np.empty_like(t)                #Empty exposure array for each particle
 
 for i in range(5):
     for j in range(N):
-        x = xp[i]+cos(alpha)*Ui*t[j]*tsample
-        if (x+rp <0) or (x-rp >0):
+        x = xp[i]+cos(alpha)*Ui*t[j]*Es
+        '''if (x+rp <0) or (x-rp >0):
             E[j]=0
         else: E[j]=I(x,beta,ds,x,x+Ui*Es)
-        print ('x'),x
+        print ('x'),x'''
         if (x+rp <0.) or (x-rp >pix):
             E[j]=0.
         else: E[j]=I(x,beta,ds,x,x+(Ui*Es))
-    print ('xp'),xp
-    print ('Exposure[j]'),E
+    '''print ('xp'),xp
+    print ('Exposure[j]'),E'''
         
     plt.figure(2)
+    plt.title('Time Step 1')
     plt.bar(t,E,color='b')
+    plt.text(0,7,'Recommended $\delta t_e$: %10.3f'%dte)
+    plt.text(0,5,'Actual $\delta t_e$: %10.3f'%Es)
     plt.xlabel('Time Steps')
     plt.ylabel('Exposure')
     plt.xlim(min(t),max(t))
@@ -105,19 +108,22 @@ for i in range(5):
 
 for i in range(5):
     for j in range(N):
-        x = xp[i]+cos(alpha)*Ui*t[j]*tsample
-        if (x+rp <10) or (x-rp >10):
+        x = xp[i]+cos(alpha)*Ui*t[j]*Es
+        '''if (x+rp <10) or (x-rp >10):
             E[j]=0
         else: E[j]=I(x,beta,ds,x,x+Ui*Es)
-        print ('x'),x
+        print ('x'),x'''
         if (x+rp <10.) or (x-rp >pix+10):
             E[j]=0.
         else: E[j]=I(x-10,beta,ds,x,x+(Ui*Es))
-    print ('xp'),xp
-    print ('Exposure[j]'),E
+    '''print ('xp'),xp
+    print ('Exposure[j]'),E'''
         
-    plt.figure(2)
+    plt.figure(3)
+    plt.title('Time Step 2')
     plt.bar(t,E,color='g')
+    plt.text(0,7,'Recommended $\delta t_e$: %10.3f'%dte)
+    plt.text(0,5,'Actual $\delta t_e$: %10.3f'%Es)
     plt.xlabel('Time Steps')
     plt.ylabel('Exposure')
     plt.xlim(min(t),max(t))
